@@ -6,10 +6,6 @@ from simulation.user_sessions import simulate_users
 def cuped_corr_coef(n_users: int, time_periods: int):
 	"""
     Calculate CUPED correlation coefficients by comparing multiple simulated pre-experiment time periods
-    
-	Args:
-		n_users: number of users in population
-		time_periods: number of time periods where half are assigned to each group
     """
 	pre_users1, post_users1, pre_users2, post_users2 = simulate_users(n_users, time_periods)
 	pre_users_sum = np.vstack([pre_users1, pre_users2]).sum(axis=1)
