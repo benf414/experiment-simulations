@@ -18,7 +18,13 @@ def cuped_corr_coef(n_users: int, time_periods: int):
 	cuped_corr_coef = np.corrcoef(pre_users_sum.flatten(), post_users_sum.flatten())[0, 1]
 	return cuped_corr_coef
 
-def required_sample_size(population_data, alpha=.05, power=.8, mde=.02, cuped_corr_coef=0.0, seq_final_alpha=.05):
+def required_sample_size(population_data, 
+						 alpha=.05, 
+						 power=.8, 
+						 mde=.02, 
+						 cuped_corr_coef=0.0, 
+						 seq_final_alpha=.045
+):
 	"""
 	Calculate required sample size for a t-test, t-test with CUPED, group sequential test, and group sequential test with CUPED.
 
