@@ -11,15 +11,16 @@ def user_weekly_session_dist(alpha=2.5, theta=1):
 def user_weekly_sessions(lam: float):
     """
     Simulates a single user's weekly sessions via a poisson distribution.
-    Mean poisson value is lam.
+    Mean value is lam.
     Active users must have a session so value is 1 + poisson value.
     """
-    sessions = 1 + np.random.poisson(lam)
+    sessions = np.random.poisson(lam)
     return sessions
 
 def simulate_users(n_users: int, time_periods: int, exp_effect=0.0):
     """
     Simulates multiple users over multiple time periods.
+    Adds an experimental effect to the treatment group in the post-experiment period.
     Half of the users are assigned to control and half to treatment.
     Half of the time periods are considered pre-experiment and half post-experiment.
     Returns 4 arrays of shape (n_users, time_periods/2) with the number of sessions for each user in each time period.
