@@ -1,0 +1,24 @@
+[project]
+name = "experiment-simulations"
+version = "1.0.0"
+description = "Simulation-based comparison of common A/B testing frameworks"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "seaborn",
+    "scipy"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
