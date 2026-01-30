@@ -1,0 +1,18 @@
+title: Comparing Common Experiment Methods
+description: Comparing common experiment methods for A/B testing
+
+remote_theme: just-the-docs/just-the-docs
+
+plugins:
+  - jekyll-remote-theme
+
+nav_enabled: false
+
+toc:
+  enabled: true
+
+heading_anchors: true
+
+aux_links:
+  "GitHub Repository":
+    - "https://github.com/benf414/experiment-simulations"
