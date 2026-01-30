@@ -1,6 +1,6 @@
 # Comparing Common Experiment Methods
 
-This work evaluates four common experiment methods. Click [here](https://benf414.github.io/experiment-simulations/writeup.html) for a write-up that introduces and summarizes the findings for a non-technical audience.
+This work evaluates four common experiment methods. Click [here](https://benf414.github.io/experiment-simulations/) for a write-up that introduces and summarizes the findings for a non-technical audience.
 
 ## Description
 
