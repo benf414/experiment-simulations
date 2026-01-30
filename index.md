@@ -1,8 +1,12 @@
-# Comparing Common Experiment Methods
+---
+layout: default
+title: Comparing Common Experiment Methods
+nav_exclude: true
+---
 
 ## Introduction
 
-A/B testing is used extensively to test whether changes to a product or service affect users who experience it. The standard approach using a t-test is effective and but has drawbacks. Other common methods were created to address downsides to the t-test, and this work evaluates two of them: Controlled experiment Using Pre-Experiment Data (CUPED) adjustment, and sequential testing. Introductions and evaluations are provided for each framework.
+A/B testing is a core tool for decision-making, helping teams determine whether a change meaningfully impacts users. While the standard t-test is simple and effective, it can be inefficient in product experiments. This writeup introduces and evaluates two widely used alternatives: CUPED and sequential testing. It also provides guidance on choosing the method based on a team's goals and constraints.
 
 ## T-test
 
@@ -16,9 +20,9 @@ To make it more intuitive, imagine someone wants to see whether new shoes can he
 
 ## Controlled experiments Using Pre Experiment Data (CUPED)
 
-CUPED is an adjustment that can be applied to the t-test to reduce variance. It recognizes that much of the variation in outcomes is due to baseline differences between units. CUPED works by using pre-experiment data to estimate how much of a unit's outcome can be predicted by it, and then subtracting that predictable component before comparing treatment and control.
+CUPED is an adjustment that can be applied to an experiment to reduce variance. It recognizes that much of the variation in outcomes is due to baseline differences between units. CUPED works by using pre-experiment data to estimate how much of a unit's outcome can be predicted by it, and then subtracting that predictable component before comparing treatment and control.
 
-Continuing the analogy, imagine two runners whose normal mile times are 5:00 and 10:00. Compared to the average runner, one is consistently faster and one consistently slower. If historical data shows that 80% of their race times can be predicted by knowing these baseline differences, CUPED adjusts each runner's experiment mile time by 80% of how far they normally are from average. This process reduces variance and makes it easier to determine whether a difference in outcome can be explained by variance.
+Continuing the analogy, imagine two runners whose normal mile times are 5:00 and 10:00. Compared to the average runner, one is consistently faster and one consistently slower. If historical data shows that 80% of their race times can be predicted from their baseline performance, CUPED adjusts each runner's experiment results by removing 80% of their usual deviation from average. In this case, experiment times of 5:00 and 10:00 would be adjusted to 7:00 and 8:00. By accounting for baseline differences, CUPED reduces variance and makes it easier to detect an experiment's effect on the treatment group.
 
 ## Sequential tests
 
@@ -26,21 +30,21 @@ Sequential testing is a method to analyze an experiment multiple times while it 
 
 Intuitively, imagine two runners in a 100-meter race. Person A starts strong but stumbles mid-race. Person B temporarily takes the lead, but Person A recovers and ends up winning. If you paused the race at that moment and declared Person B the winner, you would have been wrong. The more often you had paused the race, the more likely you would have seen that misleading scenario. Sequential testing allows multiple checks but requires stronger evidence for earlier checks to account for the amount of time remaining where results could change.
 
-## Evaluation
+## Evaluating the Methods
 
-The goal of an experiment is to accurately determine whether the tested change works while minimizing the test duration. Compared to t-tests, sequential testing aims to shorten the duration by allowing early stopping when the observed difference between treatment and control is high. CUPED removes variance unrelated to any potential effect from the tested change, which can increase accuracy or reduce duration. In this analysis, I focused on duration reduction for both methods as measured by the required sample size.
+The goal of an experiment is to accurately determine whether a tested change has an effect while minimizing the time needed to reach a decision. Compared to standard t-tests, sequential testing aims to shorten experiment duration by allowing early stopping when the observed difference between treatment and control is high. CUPED reduces variance unrelated to the treatment effect, which can improve accuracy in detecting the treatment effect or reduce duration. In this analysis, I focused on duration reduction for both methods as measured by the required sample size to reach a decision.
 
-To compare these methods, I ran them repeatedly against simulated user session data. Results depend on the properties of the outcome metric, and I discuss this in the next section.
+To compare these methods, I evaluated them using simulated user session data. Each simulation applied a treatment effect ranging from -3% to +3% and measured how they performed. Results also depend on the properties of the outcome metric. I did not evaluate this here, but it is discussed in the next section.
 
-The chart below shows the average required sample size for each method broken out by the true treatment effect. CUPED had significantly lower sample sizes. Sequential test totals required slightly more users when the true effect was near zero due to stricter standards. However, sample sizes decreased the further the effect was from zero due to early stopping.
+The chart below shows the average required sample size for each method broken out by the treatment effect. CUPED had significantly lower sample sizes. Sequential test totals required slightly more users when the treatment effect was near zero due to stricter standards. However, sample sizes decreased the further the effect was from zero due to early stopping.
 
 ![Average Sample Size](visualizations/sample_size_viz.png)
 
-The chart below shows the percent of tests that reached statistical significance broken out by the true treatment effect. Despite large decreases in required sample size, test accuracy was similar among all methods.
+The chart below shows the percent of tests that reached statistical significance broken out by the treatment effect. Despite large decreases in required sample size, test accuracy was similar among all methods.
 
 ![Statistical Significance](visualizations/stat_sig_viz.png)
 
-## Comparison of Methods
+## Choosing the Right Method
 
 ### Standard t-test
 
@@ -75,7 +79,7 @@ Choose if:
 Pros:
 - Easy to interpret.
 - Allows results to be checked during the experiment.
-- Can significantly reduce required sample size when the true treatment effect is large.
+- Can significantly reduce required sample size when the treatment effect is large.
 
 Cons:
 - Complex to implement.
@@ -89,7 +93,7 @@ Choose if:
 
 Pros:
 - Allows results to be checked during the experiment.
-- Can drastically reduce the required sample size depending on how well historical data predicts current data, and whether the true treatment effect is large.
+- Can drastically reduce the required sample size depending on how well historical data predicts current data, and whether the treatment effect is large.
 
 Cons:
 - Complex to implement.

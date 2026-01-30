@@ -1,7 +1,7 @@
 [project]
 name = "experiment-simulations"
 version = "1.0.0"
-description = "Simulation-based comparison of common A/B testing frameworks"
+description = "Comparing common experiment methods for A/B testing"
 readme = "README.md"
 requires-python = ">=3.10"
 
