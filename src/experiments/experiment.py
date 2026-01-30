@@ -13,6 +13,7 @@ class experiment:
                  t_test_cuped_n: int, 
                  seq_test_n: int, 
                  seq_test_cuped_n: int,
+                 cuped_theta: float
 ):
         """
         Creates an experiment object.
@@ -27,6 +28,7 @@ class experiment:
             t_test_cuped_n: required sample size for t-test with CUPED
             seq_test_n: required sample size for group sequential test
             seq_test_cuped_n: required sample size for group sequential test with CUPED
+            cuped_theta: estimated theta to use for CUPED adjustment
         """
         self.pre_c_user_sessions = pre_c_user_sessions
         self.post_c_user_sessions = post_c_user_sessions
@@ -36,6 +38,7 @@ class experiment:
         self.t_test_cuped_n = t_test_cuped_n
         self.seq_test_n = seq_test_n
         self.seq_test_cuped_n = seq_test_cuped_n
+        self.cuped_theta = cuped_theta
         self.results = {}
 
         self._ttest_c_sessions = None
@@ -60,6 +63,11 @@ class experiment:
         """
         Creates test groups for the experiment.
         """
+        assert len(self.pre_c_user_sessions) >= max(self.t_test_n, self.t_test_cuped_n, self.seq_test_n, self.seq_test_cuped_n), "Not enough pre-experiment control users for required sample"
+        assert len(self.post_c_user_sessions) >= max(self.t_test_n, self.t_test_cuped_n, self.seq_test_n, self.seq_test_cuped_n), "Not enough post-experiment control users for required sample"
+        assert len(self.pre_t_user_sessions) >= max(self.t_test_n, self.t_test_cuped_n, self.seq_test_n, self.seq_test_cuped_n), "Not enough pre-experiment treatment users for required sample"
+        assert len(self.post_t_user_sessions) >= max(self.t_test_n, self.t_test_cuped_n, self.seq_test_n, self.seq_test_cuped_n), "Not enough post-experiment treatment users for required sample"
+
         df_pre_c_user_sessions = pd.DataFrame(self.pre_c_user_sessions)
         df_post_c_user_sessions = pd.DataFrame(self.post_c_user_sessions)
         df_pre_t_user_sessions = pd.DataFrame(self.pre_t_user_sessions)
@@ -651,12 +659,10 @@ class experiment:
         self._ttest_cuped_t_sessions = self._ttest_cuped_t_sessions.merge(self._ttest_cuped_t_cov[['user_id', 'period4_total_sessions']], on='user_id', how='left', suffixes=('', '_cov'))
         
         ttest_cuped_pre_sessions = pd.concat([self._ttest_cuped_c_cov['period4_total_sessions'], self._ttest_cuped_t_cov['period4_total_sessions']], ignore_index=True)
-        ttest_cuped_post_sessions = pd.concat([self._ttest_cuped_c_sessions['period4_total_sessions'], self._ttest_cuped_t_sessions['period4_total_sessions']], ignore_index=True)
-        ttest_cuped_covar = np.cov(ttest_cuped_pre_sessions, ttest_cuped_post_sessions, ddof=1)[0, 1] / np.var(ttest_cuped_pre_sessions, ddof=1)
         ttest_cov_mean = ttest_cuped_pre_sessions.mean()
         
-        self._ttest_cuped_c_sessions['sessions_cuped'] = self._ttest_cuped_c_sessions['period4_total_sessions'] - ttest_cuped_covar * (self._ttest_cuped_c_sessions['period4_total_sessions_cov'] - ttest_cov_mean)
-        self._ttest_cuped_t_sessions['sessions_cuped'] = self._ttest_cuped_t_sessions['period4_total_sessions'] - ttest_cuped_covar * (self._ttest_cuped_t_sessions['period4_total_sessions_cov'] - ttest_cov_mean)
+        self._ttest_cuped_c_sessions['sessions_cuped'] = self._ttest_cuped_c_sessions['period4_total_sessions'] - self.cuped_theta * (self._ttest_cuped_c_sessions['period4_total_sessions_cov'] - ttest_cov_mean)
+        self._ttest_cuped_t_sessions['sessions_cuped'] = self._ttest_cuped_t_sessions['period4_total_sessions'] - self.cuped_theta * (self._ttest_cuped_t_sessions['period4_total_sessions_cov'] - ttest_cov_mean)
        
         _, ttest_cuped_p_value = ttest_ind(self._ttest_cuped_c_sessions['sessions_cuped'], self._ttest_cuped_t_sessions['sessions_cuped'])
         if ttest_cuped_p_value < 0.05:
@@ -715,14 +721,12 @@ class experiment:
             seq_cuped_c_filtered = seq_cuped_c_filtered.merge(seq_cuped_c_cov[['user_id', session_col_nm]], on='user_id', how='left', suffixes=('', '_cov'))
             seq_cuped_t_filtered = seq_cuped_t_filtered.merge(seq_cuped_t_cov[['user_id', session_col_nm]], on='user_id', how='left', suffixes=('', '_cov'))
 
+            #estimating theta using control only since treatment effects are heterogenous
             seq_cuped_pre_sessions = pd.concat([seq_cuped_c_cov[session_col_nm], seq_cuped_t_cov[session_col_nm]], ignore_index=True)
-            seq_cuped_post_sessions = pd.concat([seq_cuped_c_filtered[session_col_nm], seq_cuped_t_filtered[session_col_nm]], ignore_index=True)
-            seq_cuped_covar = np.cov(seq_cuped_pre_sessions, seq_cuped_post_sessions, ddof=1)[0, 1] / np.var(seq_cuped_pre_sessions, ddof=1)
             seq_cov_mean = seq_cuped_pre_sessions.mean()
 
-            seq_cuped_c_filtered[f'{session_col_nm}_cuped'] = seq_cuped_c_filtered[session_col_nm] - seq_cuped_covar * (seq_cuped_c_filtered[f'{session_col_nm}_cov'] - seq_cov_mean)
-            seq_cuped_t_filtered[f'{session_col_nm}_cuped'] = seq_cuped_t_filtered[session_col_nm] - seq_cuped_covar * (seq_cuped_t_filtered[f'{session_col_nm}_cov'] - seq_cov_mean)
-
+            seq_cuped_c_filtered[f'{session_col_nm}_cuped'] = seq_cuped_c_filtered[session_col_nm] - self.cuped_theta * (seq_cuped_c_filtered[f'{session_col_nm}_cov'] - seq_cov_mean)
+            seq_cuped_t_filtered[f'{session_col_nm}_cuped'] = seq_cuped_t_filtered[session_col_nm] - self.cuped_theta * (seq_cuped_t_filtered[f'{session_col_nm}_cov'] - seq_cov_mean)
             _, ttest_seq_cuped_p_value = ttest_ind(seq_cuped_c_filtered[f'{session_col_nm}_cuped'], seq_cuped_t_filtered[f'{session_col_nm}_cuped'])
             
             if ttest_seq_cuped_p_value < seq_p_values[seq_look-1]:
