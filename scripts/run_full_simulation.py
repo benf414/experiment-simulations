@@ -1,8 +1,4 @@
-import sys
-
 from datetime import datetime
-
-sys.path.append('../src')
 from evaluation.evaluate_experiments import evaluate_experiments, summarize_results
 from evaluation.visualize_experiments import create_viz_stat_sig, create_viz_sample_size
 
@@ -29,7 +25,7 @@ def run_full_simulation(
         effect_step: step size for effect sizes
         write_output: whether to write output to Data folder
     """
-    print(f'Simulation started at {datetime.now().strftime("%H%M%S")}')
+    print(f'Simulation started at {datetime.now().strftime("%H:%M:%S")}')
 
     results = evaluate_experiments(
         n_pop_per_test=n_pop_per_test,
@@ -52,4 +48,7 @@ def run_full_simulation(
         fig.savefig(f'data/stat_sig_viz_{timestamp}.png')
         fig2.savefig(f'data/sample_size_viz_{timestamp}.png')
 
-    print(f'Simulation completed at {datetime.now().strftime("%H%M%S")}')
+    print(f'Simulation completed at {datetime.now().strftime("%H:%M:%S")}')
+
+if __name__ == "__main__":
+    run_full_simulation()

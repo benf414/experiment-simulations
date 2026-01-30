@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
-import sys
 
-sys.path.append('../src')
 from simulation.user_sessions import simulate_users
 from experiments.pre_test_analysis import required_sample_size, estimate_cuped_stats
 from experiments.experiment import experiment
