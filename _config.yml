@@ -6,7 +6,7 @@ remote_theme: just-the-docs/just-the-docs
 plugins:
   - jekyll-remote-theme
 
-nav_enabled: false
+nav_enabled: true
 
 toc:
   enabled: true
