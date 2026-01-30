@@ -12,7 +12,7 @@ In practical terms, the t-test works by:
 2. Measuring how much the outcomes vary within each group.
 3. Estimating how likely the difference measured in Step A can be explained by the natural variance measured in Step B. More natural variation means you could see a larger range of values by chance, so a larger difference in outcomes is required to be considered unlikely.
 
-To make it more intuitive, imagine someone wants to see whether new shoes can help them run faster than their friend. If both normally run between 5:30 and 6:30, it's hard to say whether a 5:45 mile versus their friend's 6:00 mile was caused by the shoes. But if both normally run between 5:55 and 6:05, that same 5:45 v 6:00 mile provides much stronger evidence that the shoes helped.
+To make it more intuitive, imagine someone wants to see whether new shoes can help them run faster than their friend. If both normally run between 5:30 and 6:30, it's hard to say whether a 5:45 mile versus their friend's 6:00 mile was caused by the shoes. But if both normally run between 5:55 and 6:05, that same 5:45 versus 6:00 mile provides much stronger evidence that the shoes helped.
 
 ## Controlled experiments Using Pre Experiment Data (CUPED)
 
