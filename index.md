@@ -10,8 +10,8 @@ nav_exclude: true
 - [Introduction](#introduction)
 - [T-test](#t-test)
 - [CUPED](#controlled-experiments-using-pre-experiment-data-cuped)
-- [Sequential tests](#sequential-test)
-- [Evaluating the Method](#evaluating-the-methods)
+- [Sequential Tests](#sequential-test)
+- [Evaluating the Methods](#evaluating-the-methods)
 - [Choosing the Right Method](#choosing-the-right-method)
 
 ## Introduction
@@ -34,7 +34,7 @@ CUPED is an adjustment that can be applied to an experiment to reduce variance. 
 
 Continuing the analogy, imagine two runners whose normal mile times are 5:00 and 10:00. Compared to the average runner, one is consistently faster and one consistently slower. If historical data shows that 80% of their race times can be predicted from their baseline performance, CUPED adjusts each runner's experiment results by removing 80% of their usual deviation from average. In this case, experiment times of 5:00 and 10:00 would be adjusted to 7:00 and 8:00. By accounting for baseline differences, CUPED reduces variance and makes it easier to detect an experiment's effect on the treatment group.
 
-## Sequential tests
+## Sequential Tests
 
 Sequential testing is a method to analyze an experiment multiple times while it is running without increasing the chance of a false positive. A standard t-test assumes the data is only analyzed once at the end. Checking results repeatedly increases the chance of seeing a statistically significant result purely by luck. Sequential testing addresses this by setting multiple checks with higher standards for statistical signficance.
 
