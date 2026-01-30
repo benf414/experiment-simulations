@@ -32,4 +32,4 @@ Boundaries for sequential testing was done via the O'Brien-Flemming method. Over
 
 ## Evaluation
 
-100 of each test configuration were run at each true treatment effect between -3% and 3$ at .5% levels.
+100 of each test configuration were run at each true treatment effect between -3% and 3% at .5% levels.
