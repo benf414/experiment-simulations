@@ -4,6 +4,8 @@ title: Comparing Common Experiment Methods
 nav_exclude: true
 ---
 
+# Comparing Common Experiment Methods
+
 ## Introduction
 
 A/B testing is a core tool for decision-making, helping teams determine whether a change meaningfully impacts users. While the standard t-test is simple and effective, it can be inefficient in product experiments. This writeup introduces and evaluates two widely used alternatives: CUPED and sequential testing. It also provides guidance on choosing the method based on a team's goals and constraints.
