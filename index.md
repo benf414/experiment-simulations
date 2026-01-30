@@ -34,11 +34,11 @@ To compare these methods, I ran them repeatedly against simulated user session d
 
 The chart below shows the average required sample size for each method broken out by the true treatment effect. CUPED had significantly lower sample sizes. Sequential test totals required slightly more users when the true effect was near zero due to stricter standards. However, sample sizes decreased the further the effect was from zero due to early stopping.
 
-![Average Sample Size](data/sample_size_viz.png)
+![Average Sample Size](visualizations/sample_size_viz.png)
 
 The chart below shows the percent of tests that reached statistical significance broken out by the true treatment effect. Despite large decreases in required sample size, test accuracy was similar among all methods.
 
-![Statistical Significance](data/stat_sig_viz.png)
+![Statistical Significance](visualizations/stat_sig_viz.png)
 
 ## Comparison of Methods
 
