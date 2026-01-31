@@ -171,6 +171,48 @@ class experiment:
 
         self._entries_created = 1
 
+    def expand_test_entry_data(table, period, inverse=False):
+        """
+        Sums sessions for a period based on entry.
+        """
+        if not inverse:
+            table[f'period{period}_total_sessions'] = np.select(
+                [
+                    table['period_entry'] == 1,
+                    table['period_entry'] == 2,
+                    table['period_entry'] == 3,
+                    table['period_entry'] == 4,
+                    table['period_entry'] > period
+                ],
+               [
+                    sum([table[i] for i in range(period)]),
+                    sum([table[i] for i in range(1, period)]),
+                    sum([table[i] for i in range(2, period)]),
+                    sum([table[i] for i in range(3, period)]),
+                    0
+                ]
+            )
+        else:
+            table[f'period{period}_total_sessions'] = np.select(
+                [
+                    table['period_entry'] == 1,
+                    table['period_entry'] == 2,
+                    table['period_entry'] == 3,
+                    table['period_entry'] == 4,
+                    table['period_entry'] > period
+                ],
+               [
+                    sum([table[i] for i in range(4 - period, 4)]),
+                    sum([table[i] for i in range(5 - period, 4)]),
+                    sum([table[i] for i in range(min(4, 6 - period), 4)]),
+                    sum([table[i] for i in range(min(4, 7 - period), 4)]),
+                    0
+                ]
+            ) 
+        
+        return table
+
+    
     def create_test_entry_data(self):
         """
         Creates data based on user entries.
@@ -179,457 +221,39 @@ class experiment:
             print("You must first create test entries via .create_test_entries()")
             return
         
-        #T-test entry data
-        self._ttest_c_sessions['period4_total_sessions'] = np.select(
-            [
-                self._ttest_c_sessions['period_entry'] == 1,
-                self._ttest_c_sessions['period_entry'] == 2,
-                self._ttest_c_sessions['period_entry'] == 3,
-                self._ttest_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._ttest_c_sessions[0] + self._ttest_c_sessions[1] + self._ttest_c_sessions[2] + self._ttest_c_sessions[3],
-                self._ttest_c_sessions[1] + self._ttest_c_sessions[2] + self._ttest_c_sessions[3],
-                self._ttest_c_sessions[2] + self._ttest_c_sessions[3],
-                self._ttest_c_sessions[3]
-            ]
-        )
+        self._ttest_c_sessions = experiment.expand_test_entry_data(self._ttest_c_sessions, period=4)
+        self._ttest_t_sessions = experiment.expand_test_entry_data(self._ttest_t_sessions, period=4)
+        
+        self._ttest_cuped_c_sessions = experiment.expand_test_entry_data(self._ttest_cuped_c_sessions, period=4)
+        self._ttest_cuped_t_sessions = experiment.expand_test_entry_data(self._ttest_cuped_t_sessions, period=4)
+        self._ttest_cuped_c_cov = experiment.expand_test_entry_data(self._ttest_cuped_c_cov, period=4, inverse=True)
+        self._ttest_cuped_t_cov = experiment.expand_test_entry_data(self._ttest_cuped_t_cov, period=4, inverse=True)
 
-        self._ttest_t_sessions['period4_total_sessions'] = np.select(
-            [
-                self._ttest_t_sessions['period_entry'] == 1,
-                self._ttest_t_sessions['period_entry'] == 2,
-                self._ttest_t_sessions['period_entry'] == 3,
-                self._ttest_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._ttest_t_sessions[0] + self._ttest_t_sessions[1] + self._ttest_t_sessions[2] + self._ttest_t_sessions[3],
-                self._ttest_t_sessions[1] + self._ttest_t_sessions[2] + self._ttest_t_sessions[3],
-                self._ttest_t_sessions[2] + self._ttest_t_sessions[3],
-                self._ttest_t_sessions[3]
-            ]
-        )
+        self._seq_c_sessions = experiment.expand_test_entry_data(self._seq_c_sessions, period=4)
+        self._seq_c_sessions = experiment.expand_test_entry_data(self._seq_c_sessions, period=3)
+        self._seq_c_sessions = experiment.expand_test_entry_data(self._seq_c_sessions, period=2)
+        self._seq_c_sessions = experiment.expand_test_entry_data(self._seq_c_sessions, period=1)
+        self._seq_t_sessions = experiment.expand_test_entry_data(self._seq_t_sessions, period=4)
+        self._seq_t_sessions = experiment.expand_test_entry_data(self._seq_t_sessions, period=3)
+        self._seq_t_sessions = experiment.expand_test_entry_data(self._seq_t_sessions, period=2)
+        self._seq_t_sessions = experiment.expand_test_entry_data(self._seq_t_sessions, period=1)
 
-        self._ttest_cuped_c_sessions['period4_total_sessions'] = np.select(
-            [
-                self._ttest_cuped_c_sessions['period_entry'] == 1,
-                self._ttest_cuped_c_sessions['period_entry'] == 2,
-                self._ttest_cuped_c_sessions['period_entry'] == 3,
-                self._ttest_cuped_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._ttest_cuped_c_sessions[0] + self._ttest_cuped_c_sessions[1] + self._ttest_cuped_c_sessions[2] + self._ttest_cuped_c_sessions[3],
-                self._ttest_cuped_c_sessions[1] + self._ttest_cuped_c_sessions[2] + self._ttest_cuped_c_sessions[3],
-                self._ttest_cuped_c_sessions[2] + self._ttest_cuped_c_sessions[3],
-                self._ttest_cuped_c_sessions[3]
-            ]
-        )
-
-        self._ttest_cuped_t_sessions['period4_total_sessions'] = np.select(
-            [
-                self._ttest_cuped_t_sessions['period_entry'] == 1,
-                self._ttest_cuped_t_sessions['period_entry'] == 2,
-                self._ttest_cuped_t_sessions['period_entry'] == 3,
-                self._ttest_cuped_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._ttest_cuped_t_sessions[0] + self._ttest_cuped_t_sessions[1] + self._ttest_cuped_t_sessions[2] + self._ttest_cuped_t_sessions[3],
-                self._ttest_cuped_t_sessions[1] + self._ttest_cuped_t_sessions[2] + self._ttest_cuped_t_sessions[3],
-                self._ttest_cuped_t_sessions[2] + self._ttest_cuped_t_sessions[3],
-                self._ttest_cuped_t_sessions[3]
-            ]
-        )
-
-        self._ttest_cuped_c_cov['period4_total_sessions'] = np.select(
-            [
-                self._ttest_cuped_c_cov['period_entry'] == 1,
-                self._ttest_cuped_c_cov['period_entry'] == 2,
-                self._ttest_cuped_c_cov['period_entry'] == 3,
-                self._ttest_cuped_c_cov['period_entry'] == 4
-            ],
-            [
-                self._ttest_cuped_c_cov[3] + self._ttest_cuped_c_cov[2] + self._ttest_cuped_c_cov[1] + self._ttest_cuped_c_cov[0],
-                self._ttest_cuped_c_cov[2] + self._ttest_cuped_c_cov[1] + self._ttest_cuped_c_cov[0],
-                self._ttest_cuped_c_cov[1] + self._ttest_cuped_c_cov[0],
-                self._ttest_cuped_c_cov[0]
-            ]
-        )
-
-        self._ttest_cuped_t_cov['period4_total_sessions'] = np.select(
-            [
-                self._ttest_cuped_t_cov['period_entry'] == 1,
-                self._ttest_cuped_t_cov['period_entry'] == 2,
-                self._ttest_cuped_t_cov['period_entry'] == 3,
-                self._ttest_cuped_t_cov['period_entry'] == 4
-            ],
-            [
-                self._ttest_cuped_t_cov[3] + self._ttest_cuped_t_cov[2] + self._ttest_cuped_t_cov[1] + self._ttest_cuped_t_cov[0],
-                self._ttest_cuped_t_cov[2] + self._ttest_cuped_t_cov[1] + self._ttest_cuped_t_cov[0],
-                self._ttest_cuped_t_cov[1] + self._ttest_cuped_t_cov[0],
-                self._ttest_cuped_t_cov[0]
-            ]
-        )
-
-        #Sequential test entry data
-        self._seq_c_sessions['period4_total_sessions'] = np.select(
-            [
-                self._seq_c_sessions['period_entry'] == 1,
-                self._seq_c_sessions['period_entry'] == 2,
-                self._seq_c_sessions['period_entry'] == 3,
-                self._seq_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_c_sessions[0] + self._seq_c_sessions[1] + self._seq_c_sessions[2] + self._seq_c_sessions[3],
-                self._seq_c_sessions[1] + self._seq_c_sessions[2] + self._seq_c_sessions[3],
-                self._seq_c_sessions[2] + self._seq_c_sessions[3],
-                self._seq_c_sessions[3]
-            ]
-        )
-
-        self._seq_c_sessions['period3_total_sessions'] = np.select(
-            [
-                self._seq_c_sessions['period_entry'] == 1,
-                self._seq_c_sessions['period_entry'] == 2,
-                self._seq_c_sessions['period_entry'] == 3,
-                self._seq_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_c_sessions[0] + self._seq_c_sessions[1] + self._seq_c_sessions[2],
-                self._seq_c_sessions[1] + self._seq_c_sessions[2],
-                self._seq_c_sessions[2],
-                0
-            ]
-        )
-
-        self._seq_c_sessions['period2_total_sessions'] = np.select(
-            [
-                self._seq_c_sessions['period_entry'] == 1,
-                self._seq_c_sessions['period_entry'] == 2,
-                self._seq_c_sessions['period_entry'] == 3,
-                self._seq_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_c_sessions[0] + self._seq_c_sessions[1],
-                self._seq_c_sessions[1],
-                0,
-                0
-            ]
-        )
-
-        self._seq_c_sessions['period1_total_sessions'] = np.select(
-            [
-                self._seq_c_sessions['period_entry'] == 1,
-                self._seq_c_sessions['period_entry'] == 2,
-                self._seq_c_sessions['period_entry'] == 3,
-                self._seq_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_c_sessions[0],
-                0,
-                0,
-                0
-            ]
-        )
-
-        self._seq_t_sessions['period4_total_sessions'] = np.select(
-            [
-                self._seq_t_sessions['period_entry'] == 1,
-                self._seq_t_sessions['period_entry'] == 2,
-                self._seq_t_sessions['period_entry'] == 3,
-                self._seq_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_t_sessions[0] + self._seq_t_sessions[1] + self._seq_t_sessions[2] + self._seq_t_sessions[3],
-                self._seq_t_sessions[1] + self._seq_t_sessions[2] + self._seq_t_sessions[3],
-                self._seq_t_sessions[2] + self._seq_t_sessions[3],
-                self._seq_t_sessions[3]
-            ]
-        )
-
-        self._seq_t_sessions['period3_total_sessions'] = np.select(
-            [
-                self._seq_t_sessions['period_entry'] == 1,
-                self._seq_t_sessions['period_entry'] == 2,
-                self._seq_t_sessions['period_entry'] == 3,
-                self._seq_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_t_sessions[0] + self._seq_t_sessions[1] + self._seq_t_sessions[2],
-                self._seq_t_sessions[1] + self._seq_t_sessions[2],
-                self._seq_t_sessions[2],
-                0
-            ]
-        )
-
-        self._seq_t_sessions['period2_total_sessions'] = np.select(
-            [
-                self._seq_t_sessions['period_entry'] == 1,
-                self._seq_t_sessions['period_entry'] == 2,
-                self._seq_t_sessions['period_entry'] == 3,
-                self._seq_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_t_sessions[0] + self._seq_t_sessions[1],
-                self._seq_t_sessions[1],
-                0,
-                0
-            ]
-        )
-
-        self._seq_t_sessions['period1_total_sessions'] = np.select(
-            [
-                self._seq_t_sessions['period_entry'] == 1,
-                self._seq_t_sessions['period_entry'] == 2,
-                self._seq_t_sessions['period_entry'] == 3,
-                self._seq_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_t_sessions[0],
-                0,
-                0,
-                0
-            ]
-        )
-
-        self._seq_cuped_c_sessions['period4_total_sessions'] = np.select(
-            [
-                self._seq_cuped_c_sessions['period_entry'] == 1,
-                self._seq_cuped_c_sessions['period_entry'] == 2,
-                self._seq_cuped_c_sessions['period_entry'] == 3,
-                self._seq_cuped_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_c_sessions[0] + self._seq_cuped_c_sessions[1] + self._seq_cuped_c_sessions[2] + self._seq_cuped_c_sessions[3],
-                self._seq_cuped_c_sessions[1] + self._seq_cuped_c_sessions[2] + self._seq_cuped_c_sessions[3],
-                self._seq_cuped_c_sessions[2] + self._seq_cuped_c_sessions[3],
-                self._seq_cuped_c_sessions[3]
-            ]
-        )
-
-        self._seq_cuped_c_sessions['period3_total_sessions'] = np.select(
-            [
-                self._seq_cuped_c_sessions['period_entry'] == 1,
-                self._seq_cuped_c_sessions['period_entry'] == 2,
-                self._seq_cuped_c_sessions['period_entry'] == 3,
-                self._seq_cuped_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_c_sessions[0] + self._seq_cuped_c_sessions[1] + self._seq_cuped_c_sessions[2],
-                self._seq_cuped_c_sessions[1] + self._seq_cuped_c_sessions[2],
-                self._seq_cuped_c_sessions[2],
-                0
-            ]
-        )
-
-        self._seq_cuped_c_sessions['period2_total_sessions'] = np.select(
-            [
-                self._seq_cuped_c_sessions['period_entry'] == 1,
-                self._seq_cuped_c_sessions['period_entry'] == 2,
-                self._seq_cuped_c_sessions['period_entry'] == 3,
-                self._seq_cuped_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_c_sessions[0] + self._seq_cuped_c_sessions[1],
-                self._seq_cuped_c_sessions[1],
-                0,
-                0
-            ]
-        )
-
-        self._seq_cuped_c_sessions['period1_total_sessions'] = np.select(
-            [
-                self._seq_cuped_c_sessions['period_entry'] == 1,
-                self._seq_cuped_c_sessions['period_entry'] == 2,
-                self._seq_cuped_c_sessions['period_entry'] == 3,
-                self._seq_cuped_c_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_c_sessions[0],
-                0,
-                0,
-                0
-            ]
-        )
-
-        self._seq_cuped_t_sessions['period4_total_sessions'] = np.select(
-            [
-                self._seq_cuped_t_sessions['period_entry'] == 1,
-                self._seq_cuped_t_sessions['period_entry'] == 2,
-                self._seq_cuped_t_sessions['period_entry'] == 3,
-                self._seq_cuped_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_t_sessions[0] + self._seq_cuped_t_sessions[1] + self._seq_cuped_t_sessions[2] + self._seq_cuped_t_sessions[3],
-                self._seq_cuped_t_sessions[1] + self._seq_cuped_t_sessions[2] + self._seq_cuped_t_sessions[3],
-                self._seq_cuped_t_sessions[2] + self._seq_cuped_t_sessions[3],
-                self._seq_cuped_t_sessions[3]
-            ]
-        )
-
-        self._seq_cuped_t_sessions['period3_total_sessions'] = np.select(
-            [
-                self._seq_cuped_t_sessions['period_entry'] == 1,
-                self._seq_cuped_t_sessions['period_entry'] == 2,
-                self._seq_cuped_t_sessions['period_entry'] == 3,
-                self._seq_cuped_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_t_sessions[0] + self._seq_cuped_t_sessions[1] + self._seq_cuped_t_sessions[2],
-                self._seq_cuped_t_sessions[1] + self._seq_cuped_t_sessions[2],
-                self._seq_cuped_t_sessions[2],
-                0
-            ]
-        )
-
-        self._seq_cuped_t_sessions['period2_total_sessions'] = np.select(
-            [
-                self._seq_cuped_t_sessions['period_entry'] == 1,
-                self._seq_cuped_t_sessions['period_entry'] == 2,
-                self._seq_cuped_t_sessions['period_entry'] == 3,
-                self._seq_cuped_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_t_sessions[0] + self._seq_cuped_t_sessions[1],
-                self._seq_cuped_t_sessions[1],
-                0,
-                0
-            ]
-        )
-
-        self._seq_cuped_t_sessions['period1_total_sessions'] = np.select(
-            [
-                self._seq_cuped_t_sessions['period_entry'] == 1,
-                self._seq_cuped_t_sessions['period_entry'] == 2,
-                self._seq_cuped_t_sessions['period_entry'] == 3,
-                self._seq_cuped_t_sessions['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_t_sessions[0],
-                0,
-                0,
-                0
-            ]
-        )
-
-        self._seq_cuped_c_cov['period4_total_sessions'] = np.select(
-            [
-                self._seq_cuped_c_cov['period_entry'] == 1,
-                self._seq_cuped_c_cov['period_entry'] == 2,
-                self._seq_cuped_c_cov['period_entry'] == 3,
-                self._seq_cuped_c_cov['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_c_cov[3] + self._seq_cuped_c_cov[2] + self._seq_cuped_c_cov[1] + self._seq_cuped_c_cov[0],
-                self._seq_cuped_c_cov[2] + self._seq_cuped_c_cov[1] + self._seq_cuped_c_cov[0],
-                self._seq_cuped_c_cov[1] + self._seq_cuped_c_cov[0],
-                self._seq_cuped_c_cov[0]
-            ]
-        )
-
-        self._seq_cuped_c_cov['period3_total_sessions'] = np.select(
-            [
-                self._seq_cuped_c_cov['period_entry'] == 1,
-                self._seq_cuped_c_cov['period_entry'] == 2,
-                self._seq_cuped_c_cov['period_entry'] == 3,
-                self._seq_cuped_c_cov['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_c_cov[2] + self._seq_cuped_c_cov[1] + self._seq_cuped_c_cov[0],
-                self._seq_cuped_c_cov[1] + self._seq_cuped_c_cov[0],
-                self._seq_cuped_c_cov[0],
-                0
-            ]
-        )
-
-        self._seq_cuped_c_cov['period2_total_sessions'] = np.select(
-            [
-                self._seq_cuped_c_cov['period_entry'] == 1,
-                self._seq_cuped_c_cov['period_entry'] == 2,
-                self._seq_cuped_c_cov['period_entry'] == 3,
-                self._seq_cuped_c_cov['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_c_cov[1] + self._seq_cuped_c_cov[0],
-                self._seq_cuped_c_cov[0],
-                0,
-                0
-            ]
-        )
-
-        self._seq_cuped_c_cov['period1_total_sessions'] = np.select(
-            [
-                self._seq_cuped_c_cov['period_entry'] == 1,
-                self._seq_cuped_c_cov['period_entry'] == 2,
-                self._seq_cuped_c_cov['period_entry'] == 3,
-                self._seq_cuped_c_cov['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_c_cov[0],
-                0,
-                0,
-                0
-            ]
-        )
-
-        self._seq_cuped_t_cov['period4_total_sessions'] = np.select(
-            [
-                self._seq_cuped_t_cov['period_entry'] == 1,
-                self._seq_cuped_t_cov['period_entry'] == 2,
-                self._seq_cuped_t_cov['period_entry'] == 3,
-                self._seq_cuped_t_cov['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_t_cov[3] + self._seq_cuped_t_cov[2] + self._seq_cuped_t_cov[1] + self._seq_cuped_t_cov[0],
-                self._seq_cuped_t_cov[2] + self._seq_cuped_t_cov[1] + self._seq_cuped_t_cov[0],
-                self._seq_cuped_t_cov[1] + self._seq_cuped_t_cov[0],
-                self._seq_cuped_t_cov[0]
-            ]
-        )
-
-        self._seq_cuped_t_cov['period3_total_sessions'] = np.select(
-            [
-                self._seq_cuped_t_cov['period_entry'] == 1,
-                self._seq_cuped_t_cov['period_entry'] == 2,
-                self._seq_cuped_t_cov['period_entry'] == 3,
-                self._seq_cuped_t_cov['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_t_cov[2] + self._seq_cuped_t_cov[1] + self._seq_cuped_t_cov[0],
-                self._seq_cuped_t_cov[1] + self._seq_cuped_t_cov[0],
-                self._seq_cuped_t_cov[0],
-                0
-            ]
-        )
-
-        self._seq_cuped_t_cov['period2_total_sessions'] = np.select(
-            [
-                self._seq_cuped_t_cov['period_entry'] == 1,
-                self._seq_cuped_t_cov['period_entry'] == 2,
-                self._seq_cuped_t_cov['period_entry'] == 3,
-                self._seq_cuped_t_cov['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_t_cov[1] + self._seq_cuped_t_cov[0],
-                self._seq_cuped_t_cov[0],
-                0,
-                0
-            ]
-        )
-
-        self._seq_cuped_t_cov['period1_total_sessions'] = np.select(
-            [
-                self._seq_cuped_t_cov['period_entry'] == 1,
-                self._seq_cuped_t_cov['period_entry'] == 2,
-                self._seq_cuped_t_cov['period_entry'] == 3,
-                self._seq_cuped_t_cov['period_entry'] == 4
-            ],
-            [
-                self._seq_cuped_t_cov[0],
-                0,
-                0,
-                0
-            ]
-        )
+        self._seq_cuped_c_sessions = experiment.expand_test_entry_data(self._seq_cuped_c_sessions, period=4)
+        self._seq_cuped_c_sessions = experiment.expand_test_entry_data(self._seq_cuped_c_sessions, period=3)
+        self._seq_cuped_c_sessions = experiment.expand_test_entry_data(self._seq_cuped_c_sessions, period=2)
+        self._seq_cuped_c_sessions = experiment.expand_test_entry_data(self._seq_cuped_c_sessions, period=1)
+        self._seq_cuped_t_sessions = experiment.expand_test_entry_data(self._seq_cuped_t_sessions, period=4)
+        self._seq_cuped_t_sessions = experiment.expand_test_entry_data(self._seq_cuped_t_sessions, period=3)
+        self._seq_cuped_t_sessions = experiment.expand_test_entry_data(self._seq_cuped_t_sessions, period=2)
+        self._seq_cuped_t_sessions = experiment.expand_test_entry_data(self._seq_cuped_t_sessions, period=1)
+        self._seq_cuped_c_cov = experiment.expand_test_entry_data(self._seq_cuped_c_cov, period=4, inverse=True)
+        self._seq_cuped_c_cov = experiment.expand_test_entry_data(self._seq_cuped_c_cov, period=3, inverse=True)
+        self._seq_cuped_c_cov = experiment.expand_test_entry_data(self._seq_cuped_c_cov, period=2, inverse=True)
+        self._seq_cuped_c_cov = experiment.expand_test_entry_data(self._seq_cuped_c_cov, period=1, inverse=True)
+        self._seq_cuped_t_cov = experiment.expand_test_entry_data(self._seq_cuped_t_cov, period=4, inverse=True)
+        self._seq_cuped_t_cov = experiment.expand_test_entry_data(self._seq_cuped_t_cov, period=3, inverse=True)
+        self._seq_cuped_t_cov = experiment.expand_test_entry_data(self._seq_cuped_t_cov, period=2, inverse=True)
+        self._seq_cuped_t_cov = experiment.expand_test_entry_data(self._seq_cuped_t_cov, period=1, inverse=True)
 
         self._entry_data_created = 1
     
