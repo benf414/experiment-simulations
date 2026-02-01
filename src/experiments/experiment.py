@@ -303,7 +303,7 @@ class experiment:
         #Sequential test analysis
         
         #Using O'Brien-Fleming method
-        seq_p_values = [.001, .0039, .0185, .045]
+        seq_p_values = [.0001, .0039, .0185, .045]
 
         seq_look = 1
         seq_finished = False
@@ -345,7 +345,6 @@ class experiment:
             seq_cuped_c_filtered = seq_cuped_c_filtered.merge(seq_cuped_c_cov[['user_id', session_col_nm]], on='user_id', how='left', suffixes=('', '_cov'))
             seq_cuped_t_filtered = seq_cuped_t_filtered.merge(seq_cuped_t_cov[['user_id', session_col_nm]], on='user_id', how='left', suffixes=('', '_cov'))
 
-            #estimating theta using control only since treatment effects are heterogenous
             seq_cuped_pre_sessions = pd.concat([seq_cuped_c_cov[session_col_nm], seq_cuped_t_cov[session_col_nm]], ignore_index=True)
             seq_cov_mean = seq_cuped_pre_sessions.mean()
 
