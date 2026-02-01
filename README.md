@@ -17,7 +17,7 @@ python scripts/run_full_simulation.py
 | cuped_ss_adj | .1 | percent adjustment on CUPED tests' required sample size
 | n_tests_per_effect | 100 | number of tests to simulate per treatment effect
 | effect_start | -.03 | bottom range of treatment effects to simulate
-| effect_end | .03 | top range of treatment effects to simulate (exclusive)
+| effect_end | .031 | top range of treatment effects to simulate (exclusive)
 | effect_step | .005 | intervals within the effect range to simulate
 | write_output | True | whether to write output to the Data folder
 
