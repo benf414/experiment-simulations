@@ -16,7 +16,7 @@ nav_exclude: true
 
 ## Introduction
 
-A/B testing is a core tool for decision-making, helping teams determine whether a change meaningfully impacts users. While the standard t-test is simple and effective, it can be inefficient in product experiments. This writeup introduces and evaluates two widely used alternatives: CUPED and sequential testing. It also provides guidance on choosing the right method based on a team's goals and constraints.
+A/B testing is a core tool for decision-making, helping teams determine whether a change meaningfully impacts users. While the standard t-test is a solid baseline, it can require longer experiments and struggle to detect changes with small sample sizes. This writeup introduces two widely used alternatives: CUPED and sequential testing. It focuses on practical guidance rather than mathematical derivations to help teams choose the right method based on their goals and constraints.
 
 ## T-test
 
@@ -38,7 +38,7 @@ Continuing the analogy, imagine two runners whose normal mile times are 5:00 and
 
 Sequential testing is a method to analyze an experiment multiple times while it is running without increasing the chance of a false positive. A standard t-test assumes the data is only analyzed once at the end. Checking results repeatedly increases the chance of seeing a statistically significant result purely by luck. Sequential testing addresses this by setting multiple checks with higher standards for statistical signficance.
 
-Intuitively, imagine two runners in a 100-meter race. Person A starts strong but stumbles mid-race. Person B temporarily takes the lead, but Person A recovers and ends up winning. If you paused the race at that moment and declared Person B the winner, you would have been wrong. The more often you had paused the race, the more likely you would have seen that misleading scenario. Sequential testing allows multiple checks but requires stronger evidence for earlier checks to account for the amount of time remaining where results could change.
+Intuitively, imagine two runners in a 100-meter race. Person A starts strong but stumbles mid-race. Person B temporarily takes the lead, but Person A recovers and ends up winning. If you had paused the race in the moments following Person A's stumble and declared Person B the winner, you would have been wrong. The more often you pause the race, the more likely you would have seen that misleading scenario. Sequential testing accounts for this increased chance by requiring stronger evidence for earlier checks to factor in the amount of time remaining where results could change.
 
 ## Evaluating the Methods
 
@@ -82,6 +82,7 @@ Cons:
 
 Choose if:
 - Historical data strongly predicts current data. The benefit of CUPED increases with the strength of this relationship.
+- Large sample sizes are unavailable. The reduction of variance is useful for small sample sizes where variance can otherwise be too high to detect treatment effects.
 - Dedicated data staff are available. While CUPED can significantly reduce variance, it requires careful implementation and validation to maintain good results.
 
 ### Sequential test
@@ -112,4 +113,5 @@ Cons:
 Choose if:
 - Staff are likely to look at results before the experiment ends.
 - Historical data strongly predicts current data, or there is a reasonable expectation of high treatment effect. The impact of CUPED increases with the strength of this relationship.
+- Large sample sizes are unavailable. The reduction of variance is useful for small sample sizes where variance can otherwise be too high to detect treatment effects.
 - The method is built into your testing software, or dedicated data staff are available to set it up. While CUPED can significantly reduce variance, it requires careful implementation and validation to maintain good results.
