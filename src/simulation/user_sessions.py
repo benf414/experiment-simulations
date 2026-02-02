@@ -1,3 +1,4 @@
+import math
 import numpy as np
 
 def user_weekly_session_dist(alpha=3, theta=1):
@@ -20,10 +21,13 @@ def user_weekly_sessions(lam: float):
 def simulate_users(n_users: int, time_periods: int, sigma=.2, exp_effect=0.0):
     """
     Simulates multiple users over multiple time periods.
-    Creates pre-experiment periods for each post-experiment period.
-    Starts at initial lambda value then applies random walk with standard deviation sigma.
-    Experiment effects are applied to treatment group in post-experiment periods.
     Half of the users are assigned to control and half to treatment.
+    Creates pre-experiment periods for each post-experiment period.
+    Experiment effects are applied equally to all units in the treatment group during post-experiment periods.
+    Starts at initial lambda value then applies Geometric Brownian motion to simulate change over time.
+    Based on sigma 68% of steps are within x of the starting value: .1 -> (91%,111%), .2 -> (82%,122%), .3 -> (74%,135%)
+    Based on sigma 95% of steps are within x of the starting value: .1 -> (82%,122%), .2 -> (67%,149%), .3 -> (55%,182%)
+    Reflections are placed at 50% and 200% of the starting value calculated separately for pre and post experiment periods.
     """
     if n_users % 2 != 0:
         raise ValueError("n_users must be an even number to split into control and treatment groups")
@@ -33,14 +37,22 @@ def simulate_users(n_users: int, time_periods: int, sigma=.2, exp_effect=0.0):
     pre_t_user_sessions = np.zeros((n_users//2, time_periods), dtype=int)
     post_t_user_sessions = np.zeros((n_users//2, time_periods), dtype=int)
 
+    mu = -.5 * sigma**2  #ensure no drift
+
     for g in ['control', 'treatment']:
         for i in range(n_users//2):
             lam = user_weekly_session_dist()
-            lam_max = lam * 2
-            lam_min = min(0, lam * 0.33)
+            log_lam = math.log(lam)
+            log_lam_min = log_lam - .693
+            log_lam_max = log_lam + .693
+            
             for t in range(time_periods):
-                lam = lam * (1 + np.random.normal(0, sigma))
-                lam = max(lam_min, min(lam_max, lam))
+                log_lam += max(min(np.random.normal(mu, sigma), 1.4), -1.4) #avoid steps larger than distance between min/max
+                if log_lam < log_lam_min:
+                    log_lam = log_lam_min + (log_lam_min - log_lam)
+                elif log_lam > log_lam_max:
+                    log_lam = log_lam_max - (log_lam - log_lam_max)
+                lam = math.exp(log_lam)
 
                 if g == 'control':
                     pre_c_user_sessions[i, t] = user_weekly_sessions(lam)
@@ -49,12 +61,18 @@ def simulate_users(n_users: int, time_periods: int, sigma=.2, exp_effect=0.0):
 
             if g == 'treatment':
                 lam = lam * (1 + exp_effect)
-            lam_max = lam * 2
-            lam_min = min(0, lam * 0.33)
+            
+            log_lam = math.log(lam)
+            log_lam_min = log_lam - .693
+            log_lam_max = log_lam + .693
             
             for t in range(time_periods):
-                lam = lam * (1 + np.random.normal(0, sigma))
-                lam = max(lam_min, min(lam_max, lam))
+                log_lam += max(min(np.random.normal(mu, sigma), 1.4), -1.4) #avoid steps larger than distance between min/max
+                if log_lam < log_lam_min:
+                    log_lam = log_lam_min + (log_lam_min - log_lam)
+                elif log_lam > log_lam_max:
+                    log_lam = log_lam_max - (log_lam - log_lam_max)
+                lam = math.exp(log_lam)
 
                 if g == 'control':
                     post_c_user_sessions[i, t] = user_weekly_sessions(lam)
