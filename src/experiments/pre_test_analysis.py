@@ -20,7 +20,7 @@ def estimate_cuped_stats(n_users: int, time_periods: int):
 def required_sample_size(population_data, 
 						 alpha=.05, 
 						 power=.8, 
-						 mde=.02, 
+						 mde=.015, 
 						 cuped_corr_coef=0.0, 
 ):
 	"""
