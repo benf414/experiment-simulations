@@ -13,7 +13,6 @@ def user_weekly_sessions(lam: float):
     """
     Simulates a single user's weekly sessions via a poisson distribution.
     Mean value is lam.
-    Active users must have a session so value is 1 + poisson value.
     """
     sessions = np.random.poisson(lam)
     return sessions

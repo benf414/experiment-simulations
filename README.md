@@ -1,6 +1,6 @@
 # Comparing Common Experiment Methods
 
-A/B testing is a core tool for decision-making, helping teams determine whether a change meaningfully impacts users. While the standard t-test is a solid baseline, it can require longer experiments and struggle to detect changes with small sample sizes. The writeup [here](https://benf414.github.io/experiment-simulations/) introduces two widely used alternatives: CUPED and sequential testing. It focuses on practical guidance rather than mathematical derivations to help teams choose the right method based on their goals and constraints.
+A/B testing is a core tool for decision-making, helping teams determine whether a change meaningfully impacts users. While the standard t-test is a solid baseline, it can lengthen experiments and struggle to detect changes with small sample sizes. The writeup [here](https://benf414.github.io/experiment-simulations/) introduces two widely used alternatives: CUPED and sequential testing. It focuses on practical guidance rather than mathematical derivations to help teams choose the right method based on their goals and constraints.
 
 ## How to Run
 
